@@ -1,0 +1,47 @@
+name: Autograding Tests
+on: [push]
+
+jobs:
+  run-autograder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compile
+        run: gcc main.c -o logAnalyzer
+
+      - name: Test 1 (N=1 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 1 ERROR)
+          if [ "$output" = "6" ]; then exit 0; else exit 1; fi
+
+      - name: Test 2 (N=2 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 2 ERROR)
+          if [ "$output" = "3 3" ]; then exit 0; else exit 1; fi
+
+      - name: Test 3 (N=4 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 4 ERROR)
+          if [ "$output" = "1 2 1 2" ]; then exit 0; else exit 1; fi
+
+      - name: Test 4 (N=5 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 5 ERROR)
+          if [ "$output" = "1 1 1 1 2" ]; then exit 0; else exit 1; fi
+
+      - name: Test 5 (N=7 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 7 ERROR)
+          if [ "$output" = "0 1 0 1 0 1 3" ]; then exit 0; else exit 1; fi
+
+      - name: Test 6 (N=9 ERROR)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 9 ERROR)
+          if [ "$output" = "0 1 0 1 0 1 0 1 2" ]; then exit 0; else exit 1; fi
+
+      - name: Test 7 (Different target WARNING)
+        run: |
+          output=$(./logAnalyzer tests/test.txt 3 WARNING)
+          if [ "$output" = "1 0 1" ]; then exit 0; else exit 1; fi
